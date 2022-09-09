@@ -1,0 +1,18 @@
+*{
+    margin: 0;
+    padding: 0;
+
+}
+.header-container{
+  background-color: rgb(11, 114, 130);
+  height: 150px;
+  display: flex;
+  justify-content: center;
+}
+.myteam{
+    padding:  50px;;
+    color: bisque;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-weight: bold;
+    font-size: 50px;
+}
