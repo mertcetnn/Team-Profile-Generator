@@ -1,18 +1,40 @@
-*{
-    margin: 0;
-    padding: 0;
+* {
+  box-sizing: border-box;
+}
 
+:root {
+  --primary: rgb(12, 54, 96);
+  --secondary: white;
 }
-.header-container{
-  background-color: rgb(11, 114, 130);
-  height: 150px;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#navbar {
+  background-color: var(--primary);
+  color: var(--secondary);
+  font-size: 50px;
+}
+
+.navbar-brand {
+  font-size: 50px;
+}
+
+
+.card-header {
+  background-color: var(--primary);
+  color: var(--secondary);
+}
+
+.card-body {
+  background-color: var(--secondary);
+  color: var(--primary);
+}
+
+.container {
+  margin: 100px auto;
+  justify-content: space-evenly;
   display: flex;
-  justify-content: center;
-}
-.myteam{
-    padding:  50px;;
-    color: bisque;
-    font-family: Georgia, 'Times New Roman', Times, serif;
-    font-weight: bold;
-    font-size: 50px;
+  
 }
