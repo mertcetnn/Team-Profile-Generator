@@ -75,4 +75,53 @@ const createManager = () => {
       console.log(manager);
     });
 };
-createManager();
+
+const addEmploye = () => {
+  return inquirer.prompt([
+    {
+      type: "list",
+      name: "position",
+      message: "Choose employees postition.",
+      chosices: ["Enginer", "Intern"],
+    },
+    {
+      type: "input",
+      name: "name",
+      message: "What is the company partners name?",
+      validate: (partnerName) => {
+        if (partnerName) {
+          return true;
+        } else {
+          console.log("Dont forget to add partner name");
+        }
+      },
+    },
+
+    {
+      type: "input",
+      name: "id",
+      message: "What is the partners ID!",
+      validate: (partnerId) => {
+        if (partnerId) {
+          return true;
+        } else {
+          console.log("Please add Partners ID.");
+        }
+      },
+    },
+    {
+      type: "input",
+      name: "email",
+      message: "Please enter the employee's email.",
+      validate: (email) => {
+        valid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
+        if (valid) {
+          return true;
+        } else {
+          console.log("Please enter an email!");
+          return false;
+        }
+      },
+    },
+  ]);
+};
