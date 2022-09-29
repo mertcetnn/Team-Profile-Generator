@@ -181,10 +181,39 @@ const addEmploye = () => {
 
       teamArray.push(employee);
 
-      if (confirmAddEmployee) {
+      if (confirmAddEmp) {
         return addEmploye(teamArray);
       } else {
         return teamArray;
       }
     });
 };
+// function to generate HTML page file using file system
+const writeFile = (data) => {
+  fs.writeFile("./dist/index.html", data, (err) => {
+    // if there is an error
+    if (err) {
+      console.log(err);
+      return;
+      // when the profile has been created
+    } else {
+      console.log(
+        "Your team profile has been successfully created! Please check out the index.html"
+      );
+    }
+  });
+};
+
+createManager()
+  .then(addEmploye)
+  .then(
+    ((myTeamArr) => {
+      return generate(myTeamArr);
+    }).then(
+      ((pageHTML) => {
+        return writeFile(pageHTML);
+      }).catch((err) => {
+        console.log(err);
+      })
+    )
+  );
