@@ -13,7 +13,7 @@ const Employee = require("./lib/employe");
 const myTeamArr = [];
 
 const createManager = () => {
-  return inquirer
+  inquirer
     .prompt([
       {
         type: "input",
@@ -70,21 +70,22 @@ const createManager = () => {
     ])
 
     .then((managerInputs) => {
-      const { name, id, email, officeNumber } = managerInputs;
-      const manager = new Manager(name, id, email, officeNumber);
+      const { name, id, mail, officeNumber } = managerInputs;
+      const manager = new Manager(name, id, mail, officeNumber);
       myTeamArr.push(manager);
       console.log(manager);
+      addEmploye();
     });
 };
 
 const addEmploye = () => {
-  return inquirer
+  inquirer
     .prompt([
       {
         type: "list",
         name: "position",
         message: "Choose employees postition.",
-        chosices: ["Enginer", "Intern"],
+        choices: ["Engineer", "Intern"],
       },
       {
         type: "input",
@@ -116,8 +117,7 @@ const addEmploye = () => {
         name: "email",
         message: "Please enter the employee's email.",
         validate: (email) => {
-          valid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email);
-          if (valid) {
+          if (email) {
             return true;
           } else {
             console.log("Please enter an email!");
@@ -127,7 +127,7 @@ const addEmploye = () => {
       },
       {
         type: "input",
-        name: "github",
+        name: "partnerGithub",
         message: "Partner's Github username.",
         when: (input) => input.position === "Engineer",
         validate: (partnerGithub) => {
@@ -140,7 +140,7 @@ const addEmploye = () => {
       },
       {
         type: "input",
-        name: "school",
+        name: "internSchool",
         message: "Please enter the intern's school",
         when: (input) => input.position === "Intern",
         validate: (internSchool) => {
@@ -159,43 +159,68 @@ const addEmploye = () => {
       },
     ])
     .then((employeeData) => {
-      let {
-        name,
-        id,
-        email,
-        position,
-        partnerGithub,
-        internSchool,
-        confirmAddEmp,
-      } = employeeData;
       let employee;
-      if (position === "Engineer") {
-        employee = new Engineer(name, id, email, github);
+      if (employeeData.position === "Engineer") {
+        console.log(employeeData.partnerGithub);
+        employee = new Engineer(
+          employeeData.name,
+          employeeData.id,
+          employeeData.email,
+          employeeData.partnerGithub
+        );
 
         console.log(employee);
-      } else if (role === "Intern") {
-        employee = new Intern(name, id, email, school);
+      } else if (employeeData.position === "Intern") {
+        employee = new Intern(
+          employeeData.name,
+          employeeData.id,
+          employeeData.email,
+          employeeData.internSchool
+        );
 
         console.log(employee);
       }
 
-      teamArray.push(employee);
+      myTeamArr.push(employee);
 
-      if (confirmAddEmp) {
-        return addEmploye(teamArray);
+      if (employeeData.confirmAddEmp) {
+        return addEmploye(myTeamArr);
       } else {
-        return teamArray;
+        console.log(myTeamArr);
       }
     });
 };
 // function to generate HTML page file using file system
+
+createManager();
+const generateTeam = (myTeamArr) => {
+  const generateManager = (manager) => {
+    return;
+    `<div class="col-4 mt-4">
+      <div class="card h-100">
+        <div class="card-header">
+          <h3>${manager.name}</h3>
+          <h4>Manager</h4>
+          <i class="material-icons">content_paste</i>
+        </div>
+
+        <div class="card-body">
+          <p class="id">ID:${manager.id}</p>
+          <p class="email">
+            Email: <a href="mailto:"></a>
+          </p>
+          <p class="office"></p>
+        </div>
+      </div>
+    </div>;`;
+  };
+};
 const writeFile = (data) => {
   fs.writeFile("./dist/index.html", data, (err) => {
     // if there is an error
     if (err) {
       console.log(err);
       return;
-      // when the profile has been created
     } else {
       console.log(
         "Your team profile has been successfully created! Please check out the index.html"
@@ -203,17 +228,3 @@ const writeFile = (data) => {
     }
   });
 };
-
-createManager()
-  .then(addEmploye)
-  .then(
-    ((myTeamArr) => {
-      return generate(myTeamArr);
-    }).then(
-      ((pageHTML) => {
-        return writeFile(pageHTML);
-      }).catch((err) => {
-        console.log(err);
-      })
-    )
-  );
