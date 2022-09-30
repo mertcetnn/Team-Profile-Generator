@@ -1,7 +1,6 @@
 //Modules
 const inquirer = require("inquirer");
 const fs = require("fs");
-const generate = require("./src/generate");
 
 //TEAM PROFILES//
 
@@ -194,11 +193,9 @@ const addEmploye = () => {
 
 createManager();
 const generateTeam = (myTeamArr) => {
+  // manager
   const generateManager = (manager) => {
-    return;
-
-    // manager
-    `<div class="col-4 mt-4">
+    return `<div class="col-4 mt-4">
       <div class="card h-100">
         <div class="card-header">
           <h3>${manager.name}</h3>
@@ -238,8 +235,7 @@ const generateTeam = (myTeamArr) => {
   // engineer
   const generateEngineer = (engineer) => {
     return `
-
-<div class="col-4 mt-4">
+    <div class="col-4 mt-4">
   <div class="card h-100">
       <div class="card-header">
           <h3>${engineer.name}</h3>
@@ -254,6 +250,76 @@ const generateTeam = (myTeamArr) => {
 
   </div>
 </div>
+
+`;
+  };
+  // turning to data each time
+  generateTeam = (data) => {
+    for (let i = 0; i < data.length; i++) {
+      const employee = data[i];
+      const position = employee.getRole();
+
+      if (position === "Manager") {
+        const managerCard = generateManager(employee);
+
+        myTeamArr.push(managerCard);
+      }
+
+      if (position === "Engineer") {
+        const engineerCard = generateEngineer(employee);
+
+        myTeamArr.push(engineerCard);
+      }
+
+      if (position === "Intern") {
+        const internCard = generateIntern(employee);
+
+        myTeamArr.push(internCard);
+      }
+    }
+    const partnersCards = myTeamArr.join("");
+    const generateTeamPage = generateTeam(partnersCards);
+    return generateTeamPage;
+  };
+  //generate html page
+  const generateTeamPage = (partnersCards) => {
+    return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://kit.fontawesome.com/c502137733.js"></script>
+</head>
+<header>
+    <nav class="navbar" id="navbar">
+        <span class="navbar-brand mb-0 h1 w-100 text-center" id="navbar-text">Team Profile</span>
+    </nav>
+</header>
+<main>
+    <div class="container">
+        <div class="row justify-content-center" id="team-cards">
+            <!--Team Cards-->
+            ${partnersCards}
+
+
+        </div>
+    </div>
+</main>
+
+    
+</body>
+</html>
+
+
+
+
+
 
 `;
   };
