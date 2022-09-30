@@ -322,19 +322,18 @@ const generateTeam = (myTeamArr) => {
 
 
 `;
-  };
-};
-
-const writeFile = (data) => {
-  fs.writeFile("./dist/index.html", data, (err) => {
-    // if there is an error
-    if (err) {
-      console.log(err);
-      return;
-    } else {
-      console.log(
-        "Your team profile has been successfully created! Please check out the index.html"
-      );
+    function writeFile(employeeData) {
+      fs.writeFile("./dist/index.html", employeeData, (err) => {
+        // if there is an error
+        if (err) {
+          console.log(err);
+          return;
+        } else {
+          console.log(
+            "Your team profile has been successfully created! Please check out the index.html"
+          );
+        }
+      });
     }
-  });
+  };
 };
