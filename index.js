@@ -10,7 +10,7 @@ const Intern = require("./lib/intern");
 const Employee = require("./lib/employe");
 
 const myTeamArr = [];
-
+const mainTeam = [];
 const createManager = () => {
   inquirer
     .prompt([
@@ -66,14 +66,23 @@ const createManager = () => {
           }
         },
       },
+      {
+        type: "confirm",
+        name: "confirmAddManager",
+        message: "Would you like to add more team members?",
+        default: false,
+      },
     ])
 
     .then((managerInputs) => {
       const { name, id, mail, officeNumber } = managerInputs;
       const manager = new Manager(name, id, mail, officeNumber);
       myTeamArr.push(manager);
-      console.log(manager);
-      addEmploye();
+      if (managerInputs.confirmAddManager == true) {
+        addEmploye();
+      } else {
+        writePage();
+      }
     });
 };
 
@@ -182,33 +191,32 @@ const addEmploye = () => {
 
       myTeamArr.push(employee);
 
-      if (employeeData.confirmAddEmp) {
+      if (employeeData.confirmAddEmp == true) {
         return addEmploye(myTeamArr);
       } else {
-        console.log(myTeamArr);
+        writePage(myTeamArr);
       }
     });
 };
 // function to generate HTML page file using file system
 
-createManager();
-const generateTeam = (myTeamArr) => {
+const generateTeam = (teammembers) => {
   // manager
   const generateManager = (manager) => {
     return `<div class="col-4 mt-4">
       <div class="card h-100">
         <div class="card-header">
-          <h3>${manager.name}</h3>
+          <h3>${manager.getName()}</h3>
           <h4>Manager</h4>
           <i class="material-icons">content_paste</i>
         </div>
 
         <div class="card-body">
-          <p class="id">ID:${manager.id}</p>
+          <p class="id">ID:${manager.getId()}</p>
           <p class="email">
-            Email: <a href="mailto:">${manager.mail}</a>
+            Email: <a href="mailto:">${manager.getEmail()}</a>
           </p>
-          <p class="office">${manager.partnerGithub}</p>
+          <p class="office">Office No:${manager.getOfficeNumber()}</p>
         </div>
       </div>
     </div>;`;
@@ -219,13 +227,13 @@ const generateTeam = (myTeamArr) => {
     <div class="col-4 mt-4">
         <div class="card h-100">
             <div class="card-header">
-                <h3>${intern.name}</h3>
+                <h3>${intern.getName()}</h3>
                 <h4>Intern</h4><i class="material-icons">assignment_ind</i>
             </div>
             <div class="card-body">
-                <p class="id">ID: ${intern.id}</p>
-                <p class="email">Email:<a href="mailto:${intern.email}">${intern.email}</a></p>
-                <p class="school">School: ${intern.school}</p>
+                <p class="id">ID: ${intern.getId()}</p>
+                <p class="email">Email:<a href="mailto:${intern.getEmail()}">${intern.getEmail()}</a></p>
+                <p class="school">School: ${intern.getSchool()}</p>
             </div>
     </div>
 </div>
@@ -238,14 +246,14 @@ const generateTeam = (myTeamArr) => {
     <div class="col-4 mt-4">
   <div class="card h-100">
       <div class="card-header">
-          <h3>${engineer.name}</h3>
+          <h3>${engineer.getName()}</h3>
           <h4>Engineer</h4><i class="material-icons">laptop_mac</i>
       </div>
 
       <div class="card-body">
-          <p class="id">ID: ${engineer.id}</p>
-          <p class="email">Email: <a href="mailto:">${engineer.email}</a></p>
-          <p class="github">Github: <a href="">${engineer.partnerGithub}</a></p>
+          <p class="id">ID: ${engineer.getId()}</p>
+          <p class="email">Email: <a href="mailto:">${engineer.getEmail()}</a></p>
+          <p class="github">Github: <a href="">${engineer.getGithub()}</a></p>
       </div>
 
   </div>
@@ -253,36 +261,7 @@ const generateTeam = (myTeamArr) => {
 
 `;
   };
-  // turning to data each time
-  generateTeam = (data) => {
-    for (let i = 0; i < data.length; i++) {
-      const employee = data[i];
-      const position = employee.getRole();
-
-      if (position === "Manager") {
-        const managerCard = generateManager(employee);
-
-        myTeamArr.push(managerCard);
-      }
-
-      if (position === "Engineer") {
-        const engineerCard = generateEngineer(employee);
-
-        myTeamArr.push(engineerCard);
-      }
-
-      if (position === "Intern") {
-        const internCard = generateIntern(employee);
-
-        myTeamArr.push(internCard);
-      }
-    }
-    const partnersCards = myTeamArr.join("");
-    const generateTeamPage = generateTeam(partnersCards);
-    return generateTeamPage;
-  };
-  //generate html page
-  const generateTeamPage = (partnersCards) => {
+  let generateTeamPage = (partnersCards) => {
     return `
 <!DOCTYPE html>
 <html lang="en">
@@ -322,18 +301,54 @@ const generateTeam = (myTeamArr) => {
 
 
 `;
-    function writeFile(employeeData) {
-      fs.writeFile("./dist/index.html", employeeData, (err) => {
-        // if there is an error
-        if (err) {
-          console.log(err);
-          return;
-        } else {
-          console.log(
-            "Your team profile has been successfully created! Please check out the index.html"
-          );
-        }
-      });
-    }
   };
+  // turning to data each time
+  const placerData = (data) => {
+    for (let i = 0; i < data.length; i++) {
+      const employee = data[i];
+      const position = employee.getRole();
+
+      if (position === "Manager") {
+        const managerCard = generateManager(employee);
+
+        mainTeam.push(managerCard);
+      }
+
+      if (position === "Engineer") {
+        const engineerCard = generateEngineer(employee);
+
+        mainTeam.push(engineerCard);
+      }
+
+      if (position === "Intern") {
+        const internCard = generateIntern(employee);
+
+        mainTeam.push(internCard);
+      }
+    }
+    const partnersCards = mainTeam.join("");
+    var teamPage = generateTeamPage(partnersCards);
+    return teamPage;
+  };
+
+  return placerData(teammembers);
 };
+
+function writePage() {
+  generateTeam(myTeamArr);
+  console.log(generateTeam(myTeamArr) + "1");
+  /////////important
+  fs.writeFile("./dist/index.html", generateTeam(myTeamArr), (err) => {
+    // if there is an error
+    if (err) {
+      console.log(err);
+      return;
+    } else {
+      console.log(
+        "Your team profile has been successfully created! Please check out the index.html"
+      );
+    }
+  });
+}
+
+createManager();
