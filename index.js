@@ -82,6 +82,7 @@ const createManager = () => {
         addEmploye();
       } else {
         writePage();
+        console.log(myTeamArr);
       }
     });
 };
@@ -195,6 +196,7 @@ const addEmploye = () => {
         return addEmploye(myTeamArr);
       } else {
         writePage(myTeamArr);
+        console.log(myTeamArr);
       }
     });
 };
@@ -335,8 +337,8 @@ const generateTeam = (teammembers) => {
 };
 
 function writePage() {
-  generateTeam(myTeamArr);
-  console.log(generateTeam(myTeamArr) + "1");
+  // generateTeam(myTeamArr);
+
   /////////important
   fs.writeFile("./dist/index.html", generateTeam(myTeamArr), (err) => {
     // if there is an error
@@ -350,5 +352,4 @@ function writePage() {
     }
   });
 }
-
 createManager();
