@@ -1,14 +1,25 @@
+const Employee = require("../lib/employe");
 const Intern = require("../lib/intern");
-// we creat intern object and adding school
+// we create intern object and adding school
 test("Creates intern object ", () => {
-  const intern = new Intern();
-  expect(intern.school).toEqual(expect.any(String));
+  const intern = new Intern(
+    "mert",
+    234,
+    "email@gmail.com",
+    "Columbia University"
+  );
+  expect(intern.internSchool).toEqual(expect.any(String));
 });
 
 test("take school inf", () => {
-  const intern = new Intern();
+  const intern = new Intern(
+    "mert",
+    234,
+    "email@gmail.com",
+    "Columbia University"
+  );
   expect(intern.getSchool()).toEqual(
-    expect.stringContaining(intern.school.toString())
+    expect.stringContaining(intern.internSchool.toString())
   );
 });
 
